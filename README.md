@@ -6,8 +6,9 @@
 
 A privacy-focused modification for the official Telegram Android client. This patch introduces a "Secret Mode" that allows you to hide specific chats, folders, and contacts behind a stealthy, invisible password system seamlessly integrated into the Telegram search bar.
 
+Example
 https://github.com/user-attachments/assets/8b83c58f-0d78-4c1f-84c7-e14cf276fc03
-*(Replace the link above with a short video or GIF showing how you type `*/1234` in search and chats disappear/appear)*
+
 
 ## ✨ Features
 
