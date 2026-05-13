@@ -5304,31 +5304,76 @@
 +            savedMc.loadDialogs(false);
 +        }
 +
-+        // 4. УМНОЕ ЗАКРЫТИЕ ОКОН
++        // 4. УМНОЕ ЗАКРЫТИЕ ОКОН (С поддержкой планшетов)
 +        if (!isSecretModeActive && this.currentAccount == org.telegram.messenger.UserConfig.selectedAccount) {
-+            if (org.telegram.ui.LaunchActivity.instance != null && org.telegram.ui.LaunchActivity.instance.getActionBarLayout() != null) {
-+                org.telegram.ui.ActionBar.INavigationLayout navLayout = org.telegram.ui.LaunchActivity.instance.getActionBarLayout();
-+                if (navLayout instanceof org.telegram.ui.ActionBar.ActionBarLayout) {
-+                    org.telegram.ui.ActionBar.ActionBarLayout layout = (org.telegram.ui.ActionBar.ActionBarLayout) navLayout;
-+                    java.util.List<org.telegram.ui.ActionBar.BaseFragment> stack = layout.getFragmentStack();
-+                    if (stack != null) {
-+                        boolean isInsideHiddenChat = false;
-+                        for (int i = 1; i < stack.size(); i++) {
-+                            long dialogId = getDialogId(stack, i);
-+                            if (dialogId != 0 && isDialogHidden(dialogId)) {
-+                                isInsideHiddenChat = true;
-+                                break;
-+                            }
-+                        }
-+                        if (isInsideHiddenChat) {
-+                            int failsafe = 0;
-+                            while (stack.size() > 1 && failsafe < 20) {
-+                                layout.closeLastFragment(false, true);
-+                                failsafe++;
++            try {
++                if (org.telegram.ui.LaunchActivity.instance != null) {
++                    // Список всех возможных макетов (основной, правый для планшетов, слои)
++                    java.util.ArrayList<org.telegram.ui.ActionBar.INavigationLayout> layouts = new java.util.ArrayList<>();
++
++                    if (org.telegram.ui.LaunchActivity.instance.getActionBarLayout() != null) {
++                        layouts.add(org.telegram.ui.LaunchActivity.instance.getActionBarLayout());
++                    }
++
++                    // Добавляем правые панели, если устройство — планшет
++                    if (org.telegram.messenger.AndroidUtilities.isTablet()) {
++                        try {
++                            java.lang.reflect.Method getRight = org.telegram.ui.LaunchActivity.class.getMethod("getRightActionBarLayout");
++                            Object right = getRight.invoke(org.telegram.ui.LaunchActivity.instance);
++                            if (right instanceof org.telegram.ui.ActionBar.INavigationLayout) layouts.add((org.telegram.ui.ActionBar.INavigationLayout) right);
++
++                            java.lang.reflect.Method getLayers = org.telegram.ui.LaunchActivity.class.getMethod("getLayersActionBarLayout");
++                            Object layers = getLayers.invoke(org.telegram.ui.LaunchActivity.instance);
++                            if (layers instanceof org.telegram.ui.ActionBar.INavigationLayout) layouts.add((org.telegram.ui.ActionBar.INavigationLayout) layers);
++                        } catch (Exception ignore) {}
++                    }
++
++                    // Проверяем каждый макет по очереди
++                    for (org.telegram.ui.ActionBar.INavigationLayout navLayout : layouts) {
++                        if (navLayout instanceof org.telegram.ui.ActionBar.ActionBarLayout) {
++                            org.telegram.ui.ActionBar.ActionBarLayout layout = (org.telegram.ui.ActionBar.ActionBarLayout) navLayout;
++                            java.util.List<org.telegram.ui.ActionBar.BaseFragment> stack = layout.getFragmentStack();
++                            if (stack != null) {
++                                boolean isInsideHiddenChat = false;
++
++                                // Если это левый (основной) макет, 0-й элемент - это список чатов (DialogsActivity).
++                                // Если это правый макет, 0-й элемент - это уже сам открытый чат.
++                                boolean isMainLayout = (navLayout == org.telegram.ui.LaunchActivity.instance.getActionBarLayout());
++                                int startIndex = isMainLayout ? 1 : 0;
++
++                                // Ищем, есть ли в стеке окон скрытый чат
++                                for (int i = startIndex; i < stack.size(); i++) {
++                                    long dialogId = getDialogId(stack, i);
++                                    if (dialogId != 0 && isDialogHidden(dialogId)) {
++                                        isInsideHiddenChat = true;
++                                        break;
++                                    }
++                                }
++
++                                // Если нашли — уничтожаем окна
++                                if (isInsideHiddenChat) {
++                                    if (isMainLayout) {
++                                        // В левом макете откатываемся до списка чатов
++                                        int failsafe = 0;
++                                        while (stack.size() > 1 && failsafe < 20) {
++                                            layout.closeLastFragment(false, true);
++                                            failsafe++;
++                                        }
++                                    } else {
++                                        // В правом макете (или слоях) уничтожаем всё подчистую
++                                        int failsafe = 0;
++                                        while (!stack.isEmpty() && failsafe < 20) {
++                                            layout.closeLastFragment(false, true);
++                                            failsafe++;
++                                        }
++                                    }
++                                }
 +                            }
 +                        }
 +                    }
 +                }
++            } catch (Exception e) {
++                org.telegram.messenger.FileLog.e(e);
 +            }
 +        }
 +
