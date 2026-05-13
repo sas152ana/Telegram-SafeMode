@@ -46,3 +46,30 @@ Since this is a patch for the official Telegram source code, you need to apply i
 ```bash
 git clone https://github.com/DrKLO/Telegram.git
 cd Telegram
+```
+
+**Step 2: Apply the SafeMode patch**
+Place the `telegram-safemode.patch` file in the root directory of the cloned repository and apply it using `git`:
+```bash
+git apply telegram-safemode.patch
+```
+*(Alternatively, you can use `patch -p1 < telegram-safemode.patch` if you are using standard patch tools).*
+
+**Step 3: Configure your API Keys**
+Open `TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java` and insert your credentials:
+```java
+public static int APP_ID = 1234567; // Replace with your ID
+public static String APP_HASH = "your_hash_here"; // Replace with your Hash
+```
+
+**Step 4: Build the App**
+1. Open the cloned folder in **Android Studio**.
+2. Let Gradle sync completely.
+3. Click **Build > Make Project** or **Run** to install the APK directly to your device.
+
+## ⚠️ Disclaimer
+
+This is an unofficial modification. It is not affiliated with, maintained, authorized, endorsed, or sponsored by Telegram Messenger Inc. Use it at your own risk. The developer is not responsible for any banned accounts or data loss.
+
+## License
+This patch inherits the [GNU General Public License v2.0](https://github.com/DrKLO/Telegram/blob/master/LICENSE) from the official Telegram repository.
