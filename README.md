@@ -5,15 +5,14 @@
 
 # Telegram SafeMode (Privacy Mod)
 
-A privacy-focused modification for the official Telegram Android client. This patch introduces a "Secret Mode" that allows you to hide specific chats, folders, and contacts behind a stealthy, invisible password system seamlessly integrated into the Telegram search bar.
+A privacy-focused modification for the official Telegram Android client. This patch introduces a "Secret Mode" that allows you to hide specific chats, folders, and contacts behind a stealthy, invisible password system seamlessly integrated into the Telegram settings search bar.
 
-Example
 <img width="484" height="1010" alt="SafeMode" src="https://github.com/user-attachments/assets/a59d16c7-9359-41da-ba41-1ec05ba780c2" />
 
 
 ## ✨ Features
 
-*   **Invisible Activation:** No obvious "lock" buttons. Control the mode by typing commands directly into the main search bar (e.g., `*/password`).
+*   **Invisible Activation:** No obvious "lock" buttons. Control the mode by typing commands directly into the settings search bar (e.g., `*/password`).
 *   **Deep Integration:** When Secret Mode is active, hidden chats and their content are completely removed from:
     *   Main chat list and Folders
     *   Contacts list and all Search results (local and global)
@@ -25,7 +24,7 @@ Example
 *   **App Switcher Protection:** The app screen is blacked out in the Android "Recent Apps" menu when Secret Mode is active.
 *   **Anti-Bruteforce System:** Built-in protection against password guessing (temporary lock after 5 failed attempts) and timing attacks.
 
-## 🛠 Commands (Used in the main Search Bar)
+## 🛠 Commands (Used in the settings Search Bar)
 
 *   `*/<password>` — Set a new password (first time) or unlock/lock the app.
 *   `*/<old_password> <new_password>` — Change your password.
