@@ -2,7 +2,8 @@
 
 A privacy-focused modification for the official Telegram Android client. This patch introduces a "Secret Mode" that allows you to hide specific chats, folders, and contacts behind a stealthy, invisible password system seamlessly integrated into the Telegram search bar.
 
-![Demo Video/GIF](link_to_your_video_or_gif_here.gif) 
+![Uploading ezgif-5cd764d6b7daa420.gif…]()
+
 *(Replace the link above with a short video or GIF showing how you type `*/1234` in search and chats disappear/appear)*
 
 ## ✨ Features
@@ -24,7 +25,7 @@ A privacy-focused modification for the official Telegram Android client. This pa
 *   `*/<password>` — Set a new password (first time) or unlock/lock the app.
 *   `*/<old_password> <new_password>` — Change your password.
 *   `*/time <minutes>` — Set the auto-lock timer. Supports both a period (`.`) and a comma (`,`) as decimal separators. 
-    *   *Examples:* `*/time 1.5` (90 seconds), `*/time 0,25` (15 seconds), or `*/time 0` (locks immediately upon minimizing the app).
+    *   *Examples:* `*/time 1.5` (90 seconds), `*/time 0,25` (15 seconds), `*/time 0` (locks immediately upon minimizing the app), `*/time -1` (app will never be blocked automatically).
 
 ---
 
