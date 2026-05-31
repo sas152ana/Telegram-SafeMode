@@ -1,5 +1,5 @@
 --- Telegram-Orig/TMessagesProj/proguard-rules.pro	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/proguard-rules.pro	2026-05-31 11:07:56.218599100 +0300
++++ Telegram-SafeMode/TMessagesProj/proguard-rules.pro	2026-05-31 18:19:32.994004300 +0300
 @@ -26,11 +26,26 @@
  -keep class org.telegram.ui.Stories.recorder.FfmpegAudioWaveformLoader { *; }
  -keep class androidx.mediarouter.app.MediaRouteButton { *; }
@@ -29,7 +29,7 @@
  # Constant folding for resource integers may mean that a resource passed to this method appears to be unused. Keep the method to prevent this from happening.
  -keep class com.google.android.exoplayer2.upstream.RawResourceDataSource {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/ApplicationLoader.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ApplicationLoader.java	2026-05-31 11:07:56.245220200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ApplicationLoader.java	2026-05-31 18:19:33.005351400 +0300
 @@ -74,11 +74,11 @@
      public static volatile long mainInterfacePausedStageQueueTime;
  
@@ -44,7 +44,7 @@
      }
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java	2026-05-31 11:55:10.979955000 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/BuildVars.java	2026-05-31 18:37:44.462838500 +0300
 @@ -24,12 +24,12 @@
      public static boolean USE_CLOUD_STRINGS = true;
      public static boolean CHECK_UPDATES = true;
@@ -53,15 +53,15 @@
  
 -    public static int APP_ID = 4;
 -    public static String APP_HASH = "014b35b6184100b085b0d0572f9b5103";
-+    public static int APP_ID = 0; // INSERT YOUR DEV ID HERE
-+    public static String APP_HASH = ""; // INSERT YOUR DEV HASH HERE
++    public static int APP_ID = 33335850;
++    public static String APP_HASH = "d55ee6f80de68dabecfe0f970a7f76b7";
  
      // SafetyNet key for Google Identity SDK, set it to empty to disable
      public static String SAFETYNET_KEY = "AIzaSyDqt8P-7F7CPCseMkOiVRgb1LY8RN1bvH8";
      public static String PLAYSTORE_APP_URL = "https://play.google.com/store/apps/details?id=org.telegram.messenger";
      public static String HUAWEI_STORE_URL = "https://appgallery.huawei.com/app/C101184875";
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetProvider.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetProvider.java	2026-05-31 11:07:56.270777200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetProvider.java	2026-05-31 18:19:33.030738800 +0300
 @@ -86,10 +86,18 @@
                  editor.putInt("type" + appWidgetId, EditWidgetActivity.TYPE_CHATS).commit();
              }
@@ -82,7 +82,7 @@
                  id = R.layout.shortcut_widget_layout_1;
              } else if (rows == 2 || selectedDialogs.size() <= 2) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetService.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetService.java	2026-05-31 11:07:56.275939600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ChatsWidgetService.java	2026-05-31 18:19:33.045509800 +0300
 @@ -391,10 +391,18 @@
          }
          ArrayList<TLRPC.User> users = new ArrayList<>();
@@ -103,7 +103,7 @@
          for (int a = 0, N = messages.size(); a < N; a++) {
              MessageObject messageObject = new MessageObject(accountInstance.getCurrentAccount(), messages.valueAt(a), (LongSparseArray<TLRPC.User>) null, null, false, true);
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetProvider.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetProvider.java	2026-05-31 11:07:56.282387600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetProvider.java	2026-05-31 18:19:33.059840800 +0300
 @@ -86,10 +86,18 @@
                  editor.putInt("type" + appWidgetId, EditWidgetActivity.TYPE_CHATS).commit();
              }
@@ -124,7 +124,7 @@
              if (rows == 1 || count <= 1) {
                  id = R.layout.contacts_widget_layout_1;
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetService.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetService.java	2026-05-31 11:07:56.300277500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/ContactsWidgetService.java	2026-05-31 18:19:33.070160900 +0300
 @@ -235,9 +235,17 @@
          }
          ArrayList<TLRPC.User> users = new ArrayList<>();
@@ -144,7 +144,7 @@
      }
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/DownloadController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/DownloadController.java	2026-05-31 11:07:56.306713700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/DownloadController.java	2026-05-31 18:19:33.084598300 +0300
 @@ -1477,11 +1477,16 @@
                          break;
                      }
@@ -220,7 +220,7 @@
  
      public void swapLoadingPriority(MessageObject o1, MessageObject o2) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/FeedWidgetService.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/FeedWidgetService.java	2026-05-31 11:07:56.311056500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/FeedWidgetService.java	2026-05-31 18:19:33.110343900 +0300
 @@ -141,10 +141,16 @@
          AndroidUtilities.runOnUIThread(() -> {
              accountInstance.getNotificationCenter().addObserver(FeedRemoteViewsFactory.this, NotificationCenter.messagesDidLoad);
@@ -239,7 +239,7 @@
              countDownLatch.await();
          } catch (Exception e) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/MediaDataController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MediaDataController.java	2026-05-31 11:07:56.348845400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MediaDataController.java	2026-05-31 18:19:33.143021400 +0300
 @@ -3701,10 +3701,11 @@
                  i--;
              }
@@ -273,7 +273,7 @@
              }
          }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-05-31 11:07:56.409088100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-05-31 18:20:10.445779300 +0300
 @@ -398,11 +398,10 @@
  
      public String uploadingWallpaper;
@@ -315,6 +315,21 @@
          if (currentAccount == 0) {
              notificationsPreferences = ApplicationLoader.applicationContext.getSharedPreferences("Notifications", Activity.MODE_PRIVATE);
              mainPreferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
+@@ -1557,12 +1563,12 @@
+         revokeTimeLimit = mainPreferences.getInt("revokeTimeLimit", 2147483647);
+         revokeTimePmLimit = mainPreferences.getInt("revokeTimePmLimit", 2147483647);
+         canRevokePmInbox = mainPreferences.getBoolean("canRevokePmInbox", canRevokePmInbox);
+         preloadFeaturedStickers = mainPreferences.getBoolean("preloadFeaturedStickers", false);
+         youtubePipType = mainPreferences.getString("youtubePipType", "disabled");
+-        keepAliveService = mainPreferences.getBoolean("keepAliveService", false);
+-        backgroundConnection = mainPreferences.getBoolean("keepAliveService", false);
++        keepAliveService = mainPreferences.getBoolean("keepAliveService", true);
++        backgroundConnection = mainPreferences.getBoolean("backgroundConnection", true);
+         promoDialogId = mainPreferences.getLong("proxy_dialog", 0);
+         nextPromoInfoCheckTime = mainPreferences.getInt("nextPromoInfoCheckTime", 0);
+         promoDialogType = mainPreferences.getInt("promo_dialog_type", 0);
+         promoPsaMessage = mainPreferences.getString("promo_psa_message", null);
+         promoPsaType = mainPreferences.getString("promo_psa_type", null);
 @@ -2118,10 +2124,29 @@
                          if (maxDate > Integer.MIN_VALUE) {
                              d.last_message_date = maxDate;
@@ -626,7 +641,7 @@
              unreadCount = topicsController.getForumUnreadCount(-d.id)[0];
          }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/MessagesStorage.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesStorage.java	2026-05-31 12:09:07.903930300 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesStorage.java	2026-05-31 18:19:33.316086400 +0300
 @@ -134,11 +134,147 @@
                  }
              }
@@ -695,7 +710,7 @@
 +                    for (int i = 0; i < getMessagesController().allDialogs.size(); i++) {
 +                        ramDialogIds.add(getMessagesController().allDialogs.get(i).id);
 +                    }
-+
+ 
 +                    storageQueue.postRunnable(() -> {
 +                        try {
 +                            // Собираем все обновления в одну мапу
@@ -707,7 +722,7 @@
 +                                    int last_mid = cursor.intValue(0);
 +                                    int dialog_date = cursor.intValue(1);
 +                                    cursor.dispose();
- 
++
 +                                    SQLiteCursor msgCursor = database.queryFinalized("SELECT data, send_state, read_state FROM messages_v2 WHERE uid = " + did + " AND mid = " + last_mid);
 +                                    TLRPC.Message message = null;
 +                                    if (msgCursor.next()) {
@@ -922,7 +937,7 @@
                          }
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/NotificationCenter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationCenter.java	2026-05-31 11:07:56.488833600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationCenter.java	2026-05-31 18:19:33.335657600 +0300
 @@ -368,10 +368,13 @@
      public static final int botForumDraftDelete = totalEvents++;
      public static final int tlSchemeParseException = totalEvents++;
@@ -938,7 +953,7 @@
      private final SparseArray<ArrayList<NotificationCenterDelegate>> observers = new SparseArray<>();
      private final SparseArray<ArrayList<NotificationCenterDelegate>> removeAfterBroadcast = new SparseArray<>();
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-05-31 11:07:56.504197900 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-05-31 18:19:33.377960700 +0300
 @@ -108,11 +108,11 @@
      private final LongSparseArray<SparseArray<MessageObject>> pushMessagesDict = new LongSparseArray<>();
      private final LongSparseArray<MessageObject> fcmRandomMessagesDict = new LongSparseArray<>();
@@ -1133,7 +1148,7 @@
          }
          return count;
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/SavedMessagesController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SavedMessagesController.java	2026-05-31 11:07:56.521041100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SavedMessagesController.java	2026-05-31 18:19:33.399417100 +0300
 @@ -27,26 +27,46 @@
  public class SavedMessagesController {
  
@@ -1284,7 +1299,7 @@
  }
 
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/ContactsAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/ContactsAdapter.java	2026-05-31 11:07:56.536314700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/ContactsAdapter.java	2026-05-31 18:19:33.424689800 +0300
 @@ -80,10 +80,13 @@
          ignoreUsers = usersToIgnore;
          this.selectedContacts = selectedContacts;
@@ -1613,7 +1628,7 @@
 +    // --- КОНЕЦ НАШЕГО КОДА ---
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsAdapter.java	2026-05-31 11:07:56.554711700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsAdapter.java	2026-05-31 18:19:33.442824200 +0300
 @@ -1647,10 +1647,24 @@
                      itemInternals.remove(i);
                      i--;
@@ -1640,7 +1655,7 @@
          if (itemInternals.get(position).viewType == VIEW_TYPE_DIALOG) {
              if (itemInternals.get(position).isForumCell && !collapsedView) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsSearchAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsSearchAdapter.java	2026-05-31 11:07:56.565473600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/DialogsSearchAdapter.java	2026-05-31 18:19:33.478948000 +0300
 @@ -104,11 +104,83 @@
              this.flags = flags;
              this.strResId = strResId;
@@ -1904,7 +1919,7 @@
  
      @Override
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/MessagesSearchAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/MessagesSearchAdapter.java	2026-05-31 11:07:56.584366800 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/MessagesSearchAdapter.java	2026-05-31 18:19:33.505707700 +0300
 @@ -156,28 +156,43 @@
          searchResultMessages.clear();
          messageIds.clear();
@@ -1952,7 +1967,7 @@
              if (oldFlickerCount > 0) notifyItemRangeChanged(oldItemsCount - oldFlickerCount, oldFlickerCount);
              notifyItemRangeInserted(oldItemsCount, newItemsCount - oldItemsCount);
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapter.java	2026-05-31 11:07:56.590580300 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapter.java	2026-05-31 18:19:33.520975700 +0300
 @@ -239,10 +239,39 @@
      }
  
@@ -1994,7 +2009,7 @@
                  searchAdapterHelper.mergeResults(users);
                  searchInProgress = false;
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapterHelper.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapterHelper.java	2026-05-31 11:07:56.597978700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Adapters/SearchAdapterHelper.java	2026-05-31 18:19:33.553476800 +0300
 @@ -162,10 +162,16 @@
                              long peerId = MessageObject.getPeerId(participant.peer);
                              if (!allowSelf && peerId == currentUserId) {
@@ -2083,7 +2098,7 @@
      }
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Cells/DialogCell.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Cells/DialogCell.java	2026-05-31 11:07:56.627866200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Cells/DialogCell.java	2026-05-31 18:19:33.591888300 +0300
 @@ -144,11 +144,12 @@
  import java.util.Stack;
  
@@ -2150,7 +2165,7 @@
                  nameLayout = new StaticLayout(nameStringFinal, Theme.dialogs_namePaint[paintIndex], Math.max(ellipsizeWidth, nameWidth), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
              }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Cells/ProfileSearchCell.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Cells/ProfileSearchCell.java	2026-05-31 11:07:56.648730700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Cells/ProfileSearchCell.java	2026-05-31 18:19:33.618029200 +0300
 @@ -626,10 +626,19 @@
          }
          CharSequence nameStringFinal = TextUtils.ellipsize(nameString, currentNamePaint, nameWidth - dp(12), TextUtils.TruncateAt.END);
@@ -2172,7 +2187,7 @@
          TextPaint currentStatusPaint = Theme.dialogs_offlinePaint;
          if (chat == null || subLabel != null) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java	2026-05-31 11:41:22.467262400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ChatActivity.java	2026-05-31 18:19:34.027080800 +0300
 @@ -2894,11 +2894,12 @@
              .add(NotificationCenter.messagesFeeUpdated)
              .add(NotificationCenter.starBalanceUpdated)
@@ -2420,7 +2435,7 @@
                  pinnedMessageObjects.put(messageObject.getId(), messageObject);
              }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/ChatsWidgetConfigActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ChatsWidgetConfigActivity.java	2026-05-31 11:23:30.700132700 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ChatsWidgetConfigActivity.java	2026-05-31 18:19:34.043494700 +0300
 @@ -53,6 +53,29 @@
          } else {
              finish();
@@ -2452,7 +2467,7 @@
 +    }
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/ChatAvatarContainer.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/ChatAvatarContainer.java	2026-05-31 11:07:56.658435600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/ChatAvatarContainer.java	2026-05-31 18:19:33.635522900 +0300
 @@ -893,10 +893,21 @@
      public void setTitle(CharSequence value) {
          setTitle(value, false, false, false, false, null, false);
@@ -2476,7 +2491,7 @@
          titleTextView.setText(value);
          if (scam || fake) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsBotsAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsBotsAdapter.java	2026-05-31 11:07:56.679108200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsBotsAdapter.java	2026-05-31 18:19:33.664334300 +0300
 @@ -137,10 +137,16 @@
              ArrayList<TLRPC.User> top_peers_bots = new ArrayList<>();
              if (top_peers != null) {
@@ -2563,7 +2578,7 @@
                          searchGlobal.add(user);
                      }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsChannelsAdapter.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsChannelsAdapter.java	2026-05-31 11:07:56.686421500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/DialogsChannelsAdapter.java	2026-05-31 18:19:33.694014500 +0300
 @@ -64,10 +64,16 @@
          ArrayList<TLRPC.Chat> channels = new ArrayList<>();
          ArrayList<TLRPC.Dialog> dialogs = MessagesController.getInstance(currentAccount).getAllDialogs();
@@ -2650,7 +2665,7 @@
                  }
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-05-31 11:07:56.710530900 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-05-31 18:19:33.760137700 +0300
 @@ -1250,18 +1250,18 @@
  
      public void resetTabId() {
@@ -2673,7 +2688,7 @@
          }
          positionToId.put(position, id);
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/FiltersListBottomSheet.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FiltersListBottomSheet.java	2026-05-31 12:36:18.143569400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FiltersListBottomSheet.java	2026-05-31 18:19:33.725797300 +0300
 @@ -67,16 +67,22 @@
          fixNavigationBar();
          this.selectedDialogs = selectedDialogs;
@@ -2722,7 +2737,7 @@
          }
          return result;
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/InviteMembersBottomSheet.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/InviteMembersBottomSheet.java	2026-05-31 11:07:56.719301500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/InviteMembersBottomSheet.java	2026-05-31 18:19:33.791312400 +0300
 @@ -47,15 +47,15 @@
  import org.telegram.ui.Cells.GroupCreateUserCell;
  import org.telegram.ui.Cells.ManageChatTextCell;
@@ -2916,7 +2931,7 @@
      private class ItemAnimator extends DefaultItemAnimator {
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/PostsSearchContainer.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/PostsSearchContainer.java	2026-05-31 11:07:56.740273800 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/PostsSearchContainer.java	2026-05-31 18:19:33.885534400 +0300
 @@ -272,10 +272,16 @@
  
                  final ArrayList<MessageObject> messages = news ? newsMessages : this.messages;
@@ -2935,7 +2950,7 @@
                      messages.add(msg);
                  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/SharedMediaLayout.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/SharedMediaLayout.java	2026-05-31 11:36:06.044003600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/SharedMediaLayout.java	2026-05-31 18:19:33.921134800 +0300
 @@ -166,10 +166,11 @@
  import org.telegram.ui.Stories.recorder.StoryRecorder;
  import org.telegram.ui.ThemeActivity;
@@ -3360,7 +3375,7 @@
                          chats.add(obj);
                      }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/ContactsWidgetConfigActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ContactsWidgetConfigActivity.java	2026-05-31 11:23:30.710269300 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/ContactsWidgetConfigActivity.java	2026-05-31 18:19:34.062709200 +0300
 @@ -53,6 +53,29 @@
          } else {
              finish();
@@ -3392,7 +3407,7 @@
 +    }
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java	2026-05-31 11:26:39.059738100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/DialogsActivity.java	2026-05-31 18:19:34.118685200 +0300
 @@ -346,11 +346,11 @@
      public boolean hasMainTabs;
  
@@ -3878,7 +3893,7 @@
                  actionBar.closeSearchField();
              }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/EditWidgetActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/EditWidgetActivity.java	2026-05-31 11:26:39.085173800 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/EditWidgetActivity.java	2026-05-31 18:19:34.139465600 +0300
 @@ -234,13 +234,25 @@
          }
          
@@ -3989,7 +4004,7 @@
                      }
                  }, selectedDialogs);
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/FeedWidgetConfigActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/FeedWidgetConfigActivity.java	2026-05-31 11:26:39.088230500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/FeedWidgetConfigActivity.java	2026-05-31 18:19:34.158670400 +0300
 @@ -28,10 +28,11 @@
              Bundle args = new Bundle();
              args.putBoolean("onlySelect", true);
@@ -4033,7 +4048,7 @@
 +    }
  }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/FilteredSearchView.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/FilteredSearchView.java	2026-05-31 11:26:39.096149100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/FilteredSearchView.java	2026-05-31 18:19:34.180715500 +0300
 @@ -96,11 +96,12 @@
  
  @SuppressLint("ViewConstructor")
@@ -4195,7 +4210,7 @@
          if (!uiCallback.actionModeShowing()) {
              uiCallback.showActionMode();
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java	2026-05-31 11:26:39.130252100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/LaunchActivity.java	2026-05-31 18:19:34.219533300 +0300
 @@ -6741,10 +6741,25 @@
              if (VoIPService.getSharedInstance() == null) {
                  MessagesController.getInstance(account).ignoreSetOnline = false;
@@ -4275,8 +4290,52 @@
              if (AndroidUtilities.isTablet()) {
                  if (rightActionBarLayout != null) {
                      rightActionBarLayout.onResume();
+--- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/NotificationsSettingsActivity.java	2026-05-21 13:23:03.000000000 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/NotificationsSettingsActivity.java	2026-05-31 18:21:31.450178900 +0300
+@@ -721,11 +721,11 @@
+                 editor.putBoolean("badgeNumberMessages", getNotificationsController().showBadgeMessages);
+                 editor.commit();
+                 getNotificationsController().updateBadge();
+             } else if (position == notificationsServiceConnectionRow) {
+                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+-                enabled = preferences.getBoolean("pushConnection", getMessagesController().backgroundConnection);
++                enabled = preferences.getBoolean("pushConnection", true);
+                 SharedPreferences.Editor editor = preferences.edit();
+                 editor.putBoolean("pushConnection", !enabled);
+                 editor.commit();
+                 if (!enabled) {
+                     ConnectionsManager.getInstance(currentAccount).setPushConnectionEnabled(true);
+@@ -750,11 +750,11 @@
+                         }
+                     }
+                 }
+             } else if (position == notificationsServiceRow) {
+                 SharedPreferences preferences = MessagesController.getNotificationsSettings(currentAccount);
+-                enabled = preferences.getBoolean("pushService", getMessagesController().keepAliveService);
++                enabled = preferences.getBoolean("pushService", true);
+                 SharedPreferences.Editor editor = preferences.edit();
+                 editor.putBoolean("pushService", !enabled);
+                 editor.commit();
+                 ApplicationLoader.startPushService();
+             } else if (position == callsVibrateRow) {
+@@ -1012,13 +1012,13 @@
+                     } else if (position == pinnedMessageRow) {
+                         checkCell.setTextAndCheck(getString("PinnedMessages", R.string.PinnedMessages), preferences.getBoolean("PinnedMessages", true), false);
+                     } else if (position == androidAutoAlertRow) {
+                         checkCell.setTextAndCheck("Android Auto", preferences.getBoolean("EnableAutoNotifications", false), true);
+                     } else if (position == notificationsServiceRow) {
+-                        checkCell.setTextAndValueAndCheck(getString("NotificationsService", R.string.NotificationsService), getString("NotificationsServiceInfo", R.string.NotificationsServiceInfo), preferences.getBoolean("pushService", getMessagesController().keepAliveService), true, true);
++                        checkCell.setTextAndValueAndCheck(getString("NotificationsService", R.string.NotificationsService), getString("NotificationsServiceInfo", R.string.NotificationsServiceInfo), preferences.getBoolean("pushService", true), true, true);
+                     } else if (position == notificationsServiceConnectionRow) {
+-                        checkCell.setTextAndValueAndCheck(getString("NotificationsServiceConnection", R.string.NotificationsServiceConnection), getString("NotificationsServiceConnectionInfo", R.string.NotificationsServiceConnectionInfo), preferences.getBoolean("pushConnection", getMessagesController().backgroundConnection), true, true);
++                        checkCell.setTextAndValueAndCheck(getString("NotificationsServiceConnection", R.string.NotificationsServiceConnection), getString("NotificationsServiceConnectionInfo", R.string.NotificationsServiceConnectionInfo), preferences.getBoolean("pushConnection", true), true, true);
+                     } else if (position == badgeNumberShowRow) {
+                         checkCell.setTextAndCheck(getString("BadgeNumberShow", R.string.BadgeNumberShow), getNotificationsController().showBadgeNumber, true);
+                     } else if (position == badgeNumberMutedRow) {
+                         checkCell.setTextAndCheck(getString("BadgeNumberMutedChats", R.string.BadgeNumberMutedChats), getNotificationsController().showBadgeMuted, true);
+                     } else if (position == badgeNumberMessagesRow) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java	2026-05-31 11:26:39.144266500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/SettingsActivity.java	2026-05-31 18:19:34.243974400 +0300
 @@ -321,11 +321,101 @@
                  listView.adapter.update(false);
              }
@@ -4381,7 +4440,7 @@
  
          otherItem = menu.addItem(1, R.drawable.ic_ab_other);
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Stories/StoriesController.java	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Stories/StoriesController.java	2026-05-31 11:21:52.390984400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Stories/StoriesController.java	2026-05-31 18:19:33.945284200 +0300
 @@ -106,10 +106,27 @@
  
      TL_stories.PeerStories currentUserStories;
@@ -4730,7 +4789,7 @@
      public HashSet<Long> blocklist = new HashSet<>();
      private LongSparseArray<Boolean> blockedOverride = new LongSparseArray<>();
 --- Telegram-Orig/TMessagesProj/src/main/res/values/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values/strings.xml	2026-05-31 11:27:03.868011600 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values/strings.xml	2026-05-31 18:19:34.299475600 +0300
 @@ -10814,6 +10814,16 @@
      <string name="AIEditorStyleSharedToSavedMessages">Sent AI Style link to **Saved Messages**</string>
      <string name="AIEditorStyleSharedToManyChats_one">Sent AI Style link to **a chat**.</string>
@@ -4750,7 +4809,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-ar/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ar/strings.xml	2026-05-31 11:27:03.883700800 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ar/strings.xml	2026-05-31 18:19:34.323522100 +0300
 @@ -1241,6 +1241,16 @@
      <string name="StartShortDayAt">d MMM\'،\' HH:mm</string>
      <string name="StartShortDayYearAt">d MMM yyyy\'،\' HH:mm</string>
@@ -4770,7 +4829,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-de/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-de/strings.xml	2026-05-31 11:27:03.903827200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-de/strings.xml	2026-05-31 18:19:34.346826000 +0300
 @@ -1373,6 +1373,16 @@
      <string name="StartShortDayAt">d\'.\' MMM\',\' HH:mm \'Uhr\'</string>
      <string name="StartShortDayYearAt">d\'.\' MMM yyyy\',\' HH:mm \'Uhr\'</string>
@@ -4790,7 +4849,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-es/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-es/strings.xml	2026-05-31 11:27:03.923023000 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-es/strings.xml	2026-05-31 18:19:34.370018000 +0300
 @@ -1314,6 +1314,16 @@
      <string name="RemindTodayAt">\'Recordar hoy a las\' HH:mm</string>
      <string name="RemindDayAt">\'Recordar el\' d \'de\' MMM \'a las\' HH:mm</string>
@@ -4810,7 +4869,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-it/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-it/strings.xml	2026-05-31 11:27:03.943546300 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-it/strings.xml	2026-05-31 18:19:34.392517700 +0300
 @@ -1535,6 +1535,16 @@
      <string name="StartShortDayYearAt">d MMM yyyy \'alle\' HH:mm</string>
      <string name="RemindTodayAt">\'Ricorda oggi alle\' HH:mm</string>
@@ -4830,7 +4889,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-ko/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ko/strings.xml	2026-05-31 11:27:03.964012800 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ko/strings.xml	2026-05-31 18:19:34.412377800 +0300
 @@ -1134,6 +1134,16 @@
      <string name="StartShortDayYearAt">yyyy\'년\' MMM d\'일,\' HH:mm</string>
      <string name="RemindTodayAt">\'오늘\' HH:mm\'에 알리기\'</string>
@@ -4850,7 +4909,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-nl/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-nl/strings.xml	2026-05-31 11:27:03.981150200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-nl/strings.xml	2026-05-31 18:19:34.432980300 +0300
 @@ -1082,6 +1082,16 @@
      <string name="StartShortDayYearAt">d MMM yyyy\',\' HH:mm</string>
      <string name="RemindTodayAt">\'Herinner vandaag om HH:mm</string>
@@ -4870,7 +4929,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-pt-rBR/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-pt-rBR/strings.xml	2026-05-31 11:27:03.999327500 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-pt-rBR/strings.xml	2026-05-31 18:19:34.454120000 +0300
 @@ -1247,6 +1247,16 @@
      <string name="StartShortDayYearAt">d \'de\' MMM \'de\' yyyy\',\' HH:mm</string>
      <string name="RemindTodayAt">\'Lembrar hoje às\' HH:mm</string>
@@ -4890,7 +4949,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-ru/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ru/strings.xml	2026-05-31 11:27:04.016112400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-ru/strings.xml	2026-05-31 18:19:34.471436700 +0300
 @@ -261,6 +261,16 @@
      <string name="StartShortDayAt">d MMM HH:mm</string>
      <string name="StartShortDayYearAt">d MMM yyyy HH:mm</string>
@@ -4910,7 +4969,7 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/res/values-uk/strings.xml	2026-05-21 13:23:03.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/res/values-uk/strings.xml	2026-05-31 11:27:04.022668900 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/res/values-uk/strings.xml	2026-05-31 18:19:34.489690100 +0300
 @@ -274,6 +274,16 @@
      <string name="StartShortDayAt">d MMM\',\' HH:mm</string>
      <string name="StartShortDayYearAt">d MMM yyyy\',\' HH:mm</string>
@@ -4930,8 +4989,8 @@
  </resources>
 \ No newline at end of file
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	1970-01-01 03:00:00.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	2026-05-31 11:07:56.527535800 +0300
-@@ -0,0 +1,545 @@
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	2026-05-31 19:05:10.423636700 +0300
+@@ -0,0 +1,590 @@
 +package org.telegram.messenger;
 +
 +import android.content.Context;
@@ -5328,31 +5387,76 @@
 +            savedMc.loadDialogs(false);
 +        }
 +
-+        // 4. УМНОЕ ЗАКРЫТИЕ ОКОН
++        // 4. УМНОЕ ЗАКРЫТИЕ ОКОН (С поддержкой планшетов)
 +        if (!isSecretModeActive && this.currentAccount == org.telegram.messenger.UserConfig.selectedAccount) {
-+            if (org.telegram.ui.LaunchActivity.instance != null && org.telegram.ui.LaunchActivity.instance.getActionBarLayout() != null) {
-+                org.telegram.ui.ActionBar.INavigationLayout navLayout = org.telegram.ui.LaunchActivity.instance.getActionBarLayout();
-+                if (navLayout instanceof org.telegram.ui.ActionBar.ActionBarLayout) {
-+                    org.telegram.ui.ActionBar.ActionBarLayout layout = (org.telegram.ui.ActionBar.ActionBarLayout) navLayout;
-+                    java.util.List<org.telegram.ui.ActionBar.BaseFragment> stack = layout.getFragmentStack();
-+                    if (stack != null) {
-+                        boolean isInsideHiddenChat = false;
-+                        for (int i = 1; i < stack.size(); i++) {
-+                            long dialogId = getDialogId(stack, i);
-+                            if (dialogId != 0 && isDialogHidden(dialogId)) {
-+                                isInsideHiddenChat = true;
-+                                break;
-+                            }
-+                        }
-+                        if (isInsideHiddenChat) {
-+                            int failsafe = 0;
-+                            while (stack.size() > 1 && failsafe < 20) {
-+                                layout.closeLastFragment(false, true);
-+                                failsafe++;
++            try {
++                if (org.telegram.ui.LaunchActivity.instance != null) {
++                    // Список всех возможных макетов (основной, правый для планшетов, слои)
++                    java.util.ArrayList<org.telegram.ui.ActionBar.INavigationLayout> layouts = new java.util.ArrayList<>();
++
++                    if (org.telegram.ui.LaunchActivity.instance.getActionBarLayout() != null) {
++                        layouts.add(org.telegram.ui.LaunchActivity.instance.getActionBarLayout());
++                    }
++
++                    // Добавляем правые панели, если устройство — планшет
++                    if (org.telegram.messenger.AndroidUtilities.isTablet()) {
++                        try {
++                            java.lang.reflect.Method getRight = org.telegram.ui.LaunchActivity.class.getMethod("getRightActionBarLayout");
++                            Object right = getRight.invoke(org.telegram.ui.LaunchActivity.instance);
++                            if (right instanceof org.telegram.ui.ActionBar.INavigationLayout) layouts.add((org.telegram.ui.ActionBar.INavigationLayout) right);
++
++                            java.lang.reflect.Method getLayers = org.telegram.ui.LaunchActivity.class.getMethod("getLayersActionBarLayout");
++                            Object layers = getLayers.invoke(org.telegram.ui.LaunchActivity.instance);
++                            if (layers instanceof org.telegram.ui.ActionBar.INavigationLayout) layouts.add((org.telegram.ui.ActionBar.INavigationLayout) layers);
++                        } catch (Exception ignore) {}
++                    }
++
++                    // Проверяем каждый макет по очереди
++                    for (org.telegram.ui.ActionBar.INavigationLayout navLayout : layouts) {
++                        if (navLayout instanceof org.telegram.ui.ActionBar.ActionBarLayout) {
++                            org.telegram.ui.ActionBar.ActionBarLayout layout = (org.telegram.ui.ActionBar.ActionBarLayout) navLayout;
++                            java.util.List<org.telegram.ui.ActionBar.BaseFragment> stack = layout.getFragmentStack();
++                            if (stack != null) {
++                                boolean isInsideHiddenChat = false;
++
++                                // Если это левый (основной) макет, 0-й элемент - это список чатов (DialogsActivity).
++                                // Если это правый макет, 0-й элемент - это уже сам открытый чат.
++                                boolean isMainLayout = (navLayout == org.telegram.ui.LaunchActivity.instance.getActionBarLayout());
++                                int startIndex = isMainLayout ? 1 : 0;
++
++                                // Ищем, есть ли в стеке окон скрытый чат
++                                for (int i = startIndex; i < stack.size(); i++) {
++                                    long dialogId = getDialogId(stack, i);
++                                    if (dialogId != 0 && isDialogHidden(dialogId)) {
++                                        isInsideHiddenChat = true;
++                                        break;
++                                    }
++                                }
++
++                                // Если нашли — уничтожаем окна
++                                if (isInsideHiddenChat) {
++                                    if (isMainLayout) {
++                                        // В левом макете откатываемся до списка чатов
++                                        int failsafe = 0;
++                                        while (stack.size() > 1 && failsafe < 20) {
++                                            layout.closeLastFragment(false, true);
++                                            failsafe++;
++                                        }
++                                    } else {
++                                        // В правом макете (или слоях) уничтожаем всё подчистую
++                                        int failsafe = 0;
++                                        while (!stack.isEmpty() && failsafe < 20) {
++                                            layout.closeLastFragment(false, true);
++                                            failsafe++;
++                                        }
++                                    }
++                                }
 +                            }
 +                        }
 +                    }
 +                }
++            } catch (Exception e) {
++                org.telegram.messenger.FileLog.e(e);
 +            }
 +        }
 +
