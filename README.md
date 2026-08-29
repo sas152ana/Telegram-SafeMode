@@ -264,4 +264,3 @@ This is an independent, open-source modification. It is not affiliated with, mai
 
 ### License
 This modification is distributed under the terms of the **GNU General Public License v2.0 (GPLv2)**, consistent with the upstream licensing of the official [Telegram for Android](https://github.com/DrKLO/Telegram) client.
-```
