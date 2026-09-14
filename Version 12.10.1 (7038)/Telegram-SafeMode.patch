@@ -591,7 +591,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              countDownLatch.await();
          } catch (Exception e) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/FileUploadOperation.java	2026-08-29 14:29:02.186422700 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/FileUploadOperation.java	2026-08-29 14:42:09.361374100 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/FileUploadOperation.java	2026-09-03 11:01:29.388539200 +0300
 @@ -82,10 +82,34 @@
      private boolean uploadFirstPartLater;
      private SparseArray<UploadCachedResult> cachedResults = new SparseArray<>();
@@ -607,9 +607,9 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
 +                return;
 +            }
 +            long now = System.currentTimeMillis();
-+            if (lastUploadProgressTime != 0 && now - lastUploadProgressTime >= 4500 && currentUploadRequetsCount > 0) {
++            if (lastUploadProgressTime != 0 && now - lastUploadProgressTime >= 3000 && currentUploadRequetsCount > 0) {
 +                if (BuildVars.LOGS_ENABLED) {
-+                    FileLog.d("FileUploadOperation: upload stalled for 4.5s, recovering upload streams...");
++                    FileLog.d("FileUploadOperation: upload stalled for 3s, recovering upload streams...");
 +                }
 +                lastUploadProgressTime = now;
 +                if (org.telegram.messenger.WsProxyController.getInstance(currentAccount).isRunning()) {
@@ -617,7 +617,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
 +                }
 +            }
 +            if (state == 1) {
-+                Utilities.stageQueue.postRunnable(uploadTimeoutRunnable, 2000);
++                Utilities.stageQueue.postRunnable(uploadTimeoutRunnable, 1000);
 +            }
 +        }
 +    };
@@ -2443,7 +2443,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          public static DraftVoice fromString(String string) {
              try {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-08-29 14:29:02.208749000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-08-31 10:34:04.153420000 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/MessagesController.java	2026-09-14 10:32:16.982048100 +0300
 @@ -202,10 +202,26 @@
      public long giveawayPeriodMax = 7;
      public long giveawayCountriesMax = 10;
@@ -2907,7 +2907,31 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  ArrayList<MessageObject> arrayList = new_dialogMessage.get(did);
                  if (arrayList == null) {
                      arrayList = new ArrayList<MessageObject>(1);
-@@ -13877,27 +14068,31 @@
+@@ -13865,10 +14056,23 @@
+                                 currentDialog = allDialogs.get(i);
+                                 break;
+                             }
+                         }
+                     }
++                    // Safemode: если диалог не на главном экране, ищем его в архиве (folder_id == 1)
++                    if (currentDialog == null) {
++                        ArrayList<TLRPC.Dialog> archiveDialogs = dialogsByFolder.get(1);
++                        if (archiveDialogs != null) {
++                            for (int i = 0; i < archiveDialogs.size(); i++) {
++                                if (archiveDialogs.get(i).id == dialogId) {
++                                    dialogs_dict.put(dialogId, archiveDialogs.get(i));
++                                    currentDialog = archiveDialogs.get(i);
++                                    break;
++                                }
++                            }
++                        }
++                    }
+                     if (currentDialog == null) {
+                         if (BuildVars.DEBUG_PRIVATE_VERSION) {
+                             FileLog.d("can't update dialog " + dialogId + " with new unread " + dialogsToUpdate.valueAt(a));
+                         }
+                         pendingUnreadCounter.put(dialogId, dialogsToUpdate.valueAt(a));
+@@ -13877,27 +14081,31 @@
                          int prevCount = currentDialog.unread_count;
                          currentDialog.unread_count = dialogsToUpdate.valueAt(a);
                          if (BuildVars.DEBUG_PRIVATE_VERSION) {
@@ -2943,7 +2967,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                                          filterDialogsChanged = true;
                                          break;
                                      }
-@@ -13911,14 +14106,18 @@
+@@ -13911,14 +14119,18 @@
                  for (int a = 0; a < dialogsMentionsToUpdate.size(); a++) {
                      long dialogId = dialogsMentionsToUpdate.keyAt(a);
                      TLRPC.Dialog currentDialog = dialogs_dict.get(dialogId);
@@ -2964,7 +2988,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                                      filterDialogsChanged = true;
                                      break;
                                  }
-@@ -13929,10 +14128,13 @@
+@@ -13929,10 +14141,13 @@
              }
              if (filterDialogsChanged) {
                  sortDialogs(null);
@@ -2978,7 +3002,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  getNotificationsController().processDialogsUpdateRead(dialogsToUpdate);
              }
          });
-@@ -14078,10 +14280,17 @@
+@@ -14078,10 +14293,17 @@
                              continue;
                          }
                      }
@@ -2996,7 +3020,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  ArrayList<MessageObject> arrayList = new_dialogMessage.get(did);
                  if (arrayList == null) {
                      arrayList = new ArrayList<MessageObject>(1);
-@@ -14335,10 +14544,16 @@
+@@ -14335,10 +14557,16 @@
          return maxDate;
      }
  
@@ -3013,7 +3037,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              int id = messageObject.getId();
              ArrayList<Integer> ids = channelViewsToSend.get(peer);
              if (ids == null) {
-@@ -14350,10 +14565,17 @@
+@@ -14350,10 +14578,17 @@
              }
          });
      }
@@ -3031,7 +3055,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              array = new SparseArray<>();
              pollsToCheck.put(dialogId, array);
              pollsToCheckSize++;
-@@ -14391,10 +14613,163 @@
+@@ -14391,10 +14626,163 @@
          } else if (minExpireTime < 5) {
              lastViewsCheckTime = Math.min(lastViewsCheckTime, System.currentTimeMillis() - (5 - minExpireTime) * 1000);
          }
@@ -3195,7 +3219,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              return;
          }
          ArrayList<Integer> arrayList = new ArrayList<>();
-@@ -14718,10 +15093,11 @@
+@@ -14718,10 +15106,11 @@
                                      getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
                                      break;
                                  }
@@ -3207,7 +3231,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                      if (!popup) {
                          getNotificationsController().processReadMessages(null, dialogId, 0, maxPositiveId, false);
                          LongSparseIntArray dialogsToUpdate = new LongSparseIntArray(1);
-@@ -14772,10 +15148,11 @@
+@@ -14772,10 +15161,11 @@
                                      getNotificationCenter().postNotificationName(NotificationCenter.dialogsNeedReload);
                                      break;
                                  }
@@ -3219,7 +3243,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                      LongSparseIntArray dialogsToUpdate = new LongSparseIntArray(1);
                      dialogsToUpdate.put(dialogId, 0);
                      getNotificationsController().processDialogsUpdateRead(dialogsToUpdate);
-@@ -16504,10 +16881,15 @@
+@@ -16504,10 +16894,15 @@
      }
      public void startShortPoll(TLRPC.Chat chat, int guid, boolean stop, Consumer<Boolean> needPollConsumer) {
          if (chat == null) {
@@ -3235,7 +3259,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              ArrayList<Integer> onlineGuids = needShortPollOnlines.get(chat.id);
              if (stop) {
                  if (guids != null) {
-@@ -18656,10 +19038,17 @@
+@@ -18656,10 +19051,17 @@
                          message.out = true;
                      }
  
@@ -3253,7 +3277,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                      } else if (obj.type == 10) {
                          interfaceUpdateMask |= UPDATE_MASK_CHAT_NAME;
                      }
-@@ -21522,10 +21911,16 @@
+@@ -21522,10 +21924,16 @@
      public boolean isDialogNotificationsSoundEnabled(long dialogId, long topicId) {
          return notificationsPreferences.getBoolean("sound_enabled_" + NotificationsController.getSharedPrefKey(dialogId, topicId), true);
      }
@@ -3270,7 +3294,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              Boolean forceChannel;
              if (chat != null) {
                  forceChannel = ChatObject.isChannel(chat) && !chat.megagroup;
-@@ -21608,10 +22003,15 @@
+@@ -21608,10 +22016,15 @@
          getConnectionsManager().sendRequest(req, (response, error) -> {});
          NotificationCenter.getInstance(currentAccount).postNotificationName(NotificationCenter.updateInterfaces, UPDATE_MASK_REACTIONS_READ);
      }
@@ -3286,7 +3310,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              return info;
          }
          if (dialogId < 0 ? !ChatObject.isChannel(getChat(-dialogId)) : !UserObject.isBot(getUser(dialogId))) {
-@@ -22380,12 +22780,18 @@
+@@ -22380,12 +22793,18 @@
              TLRPC.Chat chat = getChat(-promoDialog.id);
              if (chat != null && !chat.left) {
                  isLeftPromoChannel = false;
@@ -3305,7 +3329,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  if (messageObjects != null) {
                      int maxDate = Integer.MIN_VALUE;
                      for (int i = 0; i < messageObjects.size(); ++i) {
-@@ -23448,10 +23854,16 @@
+@@ -23448,10 +23867,16 @@
  
      public int getDialogUnreadCount(TLRPC.Dialog d) {
          if (d == null) {
@@ -3322,7 +3346,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          if (chatLocal != null && (chatLocal.forum || chatLocal.monoforum)) {
              unreadCount = topicsController.getForumUnreadCount(-d.id)[0];
          }
-@@ -23749,10 +24161,15 @@
+@@ -23749,10 +24174,15 @@
          }
          return cachedChannelRecommendations.get(dialogId);
      }
@@ -3338,7 +3362,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          }
          final boolean isPremium = getUserConfig().isPremium();
          ChannelRecommendations rec = null;
-@@ -24052,10 +24469,15 @@
+@@ -24052,10 +24482,15 @@
      public TLRPC.TL_messages_savedReactionsTags getSavedReactionTags(long topic_id) {
          return getSavedReactionTags(topic_id, false);
      }
@@ -3995,8 +4019,43 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
      public static final int communitySwitchedCollapsed = totalEvents++;
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-08-29 14:29:02.208749000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-08-31 08:59:19.840442500 +0300
-@@ -468,10 +468,18 @@
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/NotificationsController.java	2026-09-03 10:28:57.780318500 +0300
+@@ -260,14 +260,15 @@
+             return;
+         }
+         SharedPreferences preferences = null;
+         if (OTHER_NOTIFICATIONS_CHANNEL == null) {
+             preferences = ApplicationLoader.applicationContext.getSharedPreferences("Notifications", Activity.MODE_PRIVATE);
+-            OTHER_NOTIFICATIONS_CHANNEL = preferences.getString("OtherKey", "Other3");
++            // Safemode: переключаем ключ с Other3 на Other4, чтобы Android сбросил старый закэшированный вибрирующий канал
++            OTHER_NOTIFICATIONS_CHANNEL = preferences.getString("OtherKey", "Other4");
+         }
+         NotificationChannel notificationChannel = systemNotificationManager.getNotificationChannel(OTHER_NOTIFICATIONS_CHANNEL);
+-        if (notificationChannel != null && notificationChannel.getImportance() == NotificationManager.IMPORTANCE_NONE) {
++        if (notificationChannel != null && (notificationChannel.getImportance() == NotificationManager.IMPORTANCE_NONE || notificationChannel.getImportance() > NotificationManager.IMPORTANCE_LOW)) {
+             try {
+                 systemNotificationManager.deleteNotificationChannel(OTHER_NOTIFICATIONS_CHANNEL);
+             } catch (Exception e) {
+                 FileLog.e(e);
+             }
+@@ -280,13 +281,15 @@
+             }
+             OTHER_NOTIFICATIONS_CHANNEL = "Other" + Utilities.random.nextLong();
+             preferences.edit().putString("OtherKey", OTHER_NOTIFICATIONS_CHANNEL).commit();
+         }
+         if (notificationChannel == null) {
+-            notificationChannel = new NotificationChannel(OTHER_NOTIFICATIONS_CHANNEL, "Internal notifications", NotificationManager.IMPORTANCE_DEFAULT);
++            // Safemode: IMPORTANCE_LOW вместо IMPORTANCE_DEFAULT полностью блокирует вибрацию и звук на уровне ОС
++            notificationChannel = new NotificationChannel(OTHER_NOTIFICATIONS_CHANNEL, "Internal notifications", NotificationManager.IMPORTANCE_LOW);
+             notificationChannel.enableLights(false);
+             notificationChannel.enableVibration(false);
++            notificationChannel.setVibrationPattern(new long[]{0});
+             notificationChannel.setSound(null, null);
+             try {
+                 systemNotificationManager.createNotificationChannel(notificationChannel);
+             } catch (Exception e) {
+                 FileLog.e(e);
+@@ -468,10 +471,18 @@
          LongSparseIntArray dialogsToUpdate = new LongSparseIntArray();
          dialogsToUpdate.put(did, 0);
          processDialogsUpdateRead(dialogsToUpdate);
@@ -4015,7 +4074,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              MessageObject messageObject = pushMessages.get(a);
              long dialog_id = messageObject.getDialogId();
              if (messageObject.isReactionPush ||
-@@ -1023,12 +1031,26 @@
+@@ -1023,12 +1034,26 @@
          if (BuildVars.LOGS_ENABLED) {
              FileLog.d("NotificationsController: processNewMessages msgs.size()=" + (messageObjects == null ? "null" : messageObjects.size()) + " isLast=" + isLast + " isFcm=" + isFcm + ")");
          }
@@ -4042,7 +4101,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                      if (!action.active && !action.missed && (getConnectionsManager().getCurrentTime() - messageObject.messageOwner.date) < getMessagesController().callRingTimeout / 1000L) {
                          final HashSet<Long> ids = new HashSet<>();
                          ids.add(messageObject.getDialogId());
-@@ -1316,11 +1338,10 @@
+@@ -1316,11 +1341,10 @@
  
                      if (notifyCheck && !canAddValue) {
                          Integer override = pushDialogsOverrideMention.get(dialog_id);
@@ -4054,7 +4113,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                      canAddValue = canAddValue && !messageObject.isStoryPush;
  
                      if (canAddValue) {
-@@ -1365,13 +1386,13 @@
+@@ -1365,13 +1389,13 @@
      }
  
      private void appendMessage(MessageObject messageObject) {
@@ -4071,7 +4130,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              }
          }
          pushMessages.add(0, messageObject);
-@@ -1507,10 +1528,41 @@
+@@ -1507,10 +1531,41 @@
              }
          });
      }
@@ -4113,7 +4172,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          getMessagesController().putEncryptedChats(encryptedChats, true);
  
          notificationsQueue.postRunnable(() -> {
-@@ -1549,10 +1601,19 @@
+@@ -1549,10 +1604,19 @@
                      if (isPersonalMessage(messageObject)) {
                          personalCount++;
                      }
@@ -4133,7 +4192,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                          dialog_id = messageObject.getFromChatId();
                      }
                      int index = settingsCache.indexOfKey(dialog_id);
-@@ -1711,11 +1772,13 @@
+@@ -1711,11 +1775,13 @@
                      NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.pushMessagesUpdated);
                  }
                  NotificationCenter.getGlobalInstance().postNotificationName(NotificationCenter.notificationsCountUpdated, currentAccount);
@@ -4148,7 +4207,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  setBadge(getTotalAllUnreadCount());
              }
          });
-@@ -1730,10 +1793,24 @@
+@@ -1730,10 +1796,24 @@
              if (!SharedConfig.showNotificationsForAllAccounts && UserConfig.selectedAccount != a) {
                  continue;
              }
@@ -4173,7 +4232,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              }
  
              if (controller.showBadgeMessages) {
-@@ -1754,11 +1831,12 @@
+@@ -1754,11 +1834,12 @@
                          }
                      } catch (Exception e) {
                          FileLog.e(e);
@@ -4187,7 +4246,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  if (controller.showBadgeMuted) {
                      try {
                          for (int i = 0, N = MessagesController.getInstance(a).allDialogs.size(); i < N; i++) {
-@@ -1776,11 +1854,12 @@
+@@ -1776,11 +1857,12 @@
                      } catch (Exception e) {
                          //ignore, no thread synchronizations for fast
                          FileLog.e(e, false);
@@ -4201,7 +4260,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          }
          return count;
      }
-@@ -3309,13 +3388,11 @@
+@@ -3309,13 +3391,11 @@
      @Override
      public void didReceivedNotification(int id, int account, Object... args) {
          if (id == NotificationCenter.fileLoaded) {
@@ -4433,7 +4492,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
          return val;
      }
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/WsProxyController.java	1970-01-01 03:00:00.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/WsProxyController.java	2026-08-29 14:42:09.147387400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/WsProxyController.java	2026-09-03 10:59:37.049920400 +0300
 @@ -0,0 +1,428 @@
 +package org.telegram.messenger;
 +
@@ -4754,7 +4813,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
 +            return;
 +        }
 +        long now = SystemClock.elapsedRealtime();
-+        if (now - lastStallCheckTime > 2000) {
++        if (now - lastStallCheckTime > 1000) {
 +            lastStallCheckTime = now;
 +            ConnectionsManager cm = ConnectionsManager.getInstance(currentAccount);
 +            int dc = cm.getCurrentDatacenterId();
@@ -8272,7 +8331,7 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
                  }
  
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-08-29 14:29:02.487696300 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-08-31 10:33:41.171758200 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/Components/FilterTabsView.java	2026-09-03 10:46:41.792822300 +0300
 @@ -1250,18 +1250,18 @@
  
      public void resetTabId() {
@@ -13914,6 +13973,61 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
              if (AndroidUtilities.isTablet()) {
                  if (rightActionBarLayout != null) {
                      rightActionBarLayout.onResume();
+--- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/MainTabsActivity.java	2026-08-29 14:29:02.724775400 +0300
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/MainTabsActivity.java	2026-09-05 17:09:18.834704800 +0300
+@@ -459,19 +459,33 @@
+ 
+     private Integer pendingFolderId;
+ 
+     private boolean openFoldersSelector(View anchor) {
+         if (getContext() == null || getParentActivity() == null) return false;
+-        final ArrayList<MessagesController.DialogFilter> filters = getMessagesController().getDialogFilters();
+-        if (filters == null || filters.size() <= 1) return false;
++        final ArrayList<MessagesController.DialogFilter> allFilters = getMessagesController().getDialogFilters();
++        if (allFilters == null || allFilters.isEmpty()) return false;
++
++        final org.telegram.messenger.SecretModeController smc = org.telegram.messenger.SecretModeController.getInstance(currentAccount);
++        final ArrayList<MessagesController.DialogFilter> filters = new ArrayList<>();
++        for (int i = 0; i < allFilters.size(); i++) {
++            MessagesController.DialogFilter folder = allFilters.get(i);
++            if (!smc.isSecretModeActive && smc.isFolderHidden(folder.id)) {
++                continue;
++            }
++            filters.add(folder);
++        }
++        if (filters.size() <= 1) return false;
+ 
+         final ItemOptions o = ItemOptions.makeOptions(this, anchor);
+         for (int i = 0; i < filters.size(); i++) {
+             final MessagesController.DialogFilter folder = filters.get(i);
+             final ActionBarMenuSubItem folderItem = new ActionBarMenuSubItem(getParentActivity(), 2, false, false, getResourceProvider());
+             folderItem.setPadding(dp(18), 0, dp(18), 0);
+             CharSequence title = folder.isDefault() ? getString(R.string.FilterAllChats) : folder.name;
++            if (!folder.isDefault() && smc.isSecretModeActive && smc.isFolderHidden(folder.id)) {
++                title = org.telegram.messenger.SecretModeController.withSecretDot(title);
++            }
+             title = Emoji.replaceEmoji(title, folderItem.getTextView().getPaint().getFontMetricsInt(), false);
+             if (!folder.isDefault()) {
+                 title = MessageObject.replaceAnimatedEmoji(title, folder.entities, folderItem.getTextView().getPaint().getFontMetricsInt());
+             }
+             final int unreadCount = folder.isDefault()
+@@ -522,12 +536,16 @@
+     private boolean hasUnmutedUnreadDialogs(MessagesController.DialogFilter folder) {
+         final MessagesController messagesController = getMessagesController();
+         final ArrayList<TLRPC.Dialog> dialogs = folder.isDefault()
+                 ? messagesController.getDialogs(0)
+                 : messagesController.getAllDialogs();
++        final org.telegram.messenger.SecretModeController smc = org.telegram.messenger.SecretModeController.getInstance(currentAccount);
+         for (int i = 0; i < dialogs.size(); i++) {
+             final TLRPC.Dialog dialog = dialogs.get(i);
++            if (!smc.isSecretModeActive && smc.isDialogHidden(dialog.id)) {
++                continue;
++            }
+             if (!folder.isDefault()) {
+                 long dialogId = dialog.id;
+                 if (DialogObject.isEncryptedDialog(dialogId)) {
+                     final TLRPC.EncryptedChat encryptedChat = messagesController.getEncryptedChat(DialogObject.getEncryptedChatId(dialogId));
+                     if (encryptedChat != null) {
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/ui/PhotoViewer.java	2026-08-29 14:29:02.740557200 +0300
 +++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/ui/PhotoViewer.java	2026-08-29 14:42:10.677690700 +0300
 @@ -2136,10 +2136,14 @@
@@ -16522,8 +16636,8 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
 +include ':jlatexmath'
 +project(':jlatexmath').projectDir = file('TMessagesProj/lib/jlatexmath/jlatexmath')
 --- Telegram-Orig/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	1970-01-01 03:00:00.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	2026-08-31 10:34:16.970165700 +0300
-@@ -0,0 +1,969 @@
++++ Telegram-SafeMode/TMessagesProj/src/main/java/org/telegram/messenger/SecretModeController.java	2026-09-03 10:47:30.625371200 +0300
+@@ -0,0 +1,966 @@
 +package org.telegram.messenger;
 +
 +import android.content.Context;
@@ -16782,9 +16896,6 @@ Binary files Telegram-Orig/TMessagesProj/jni/x86_64/libtgwsproxy.so and Telegram
 +        }
 +        return result;
 +    }
-+    // Safemode end
-+
-+    // Safemode;
 +
 +    public int getFeedUnreadCount(int folderId) {
 +        java.util.Set<Long> channels = getFeedMediaChannels(folderId);
