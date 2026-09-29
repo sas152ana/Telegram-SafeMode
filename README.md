@@ -97,6 +97,8 @@ This mod introduces three major integrated subsystems:
 
 ## 🚀 Quick Start Guide
 
+- It's recommended to disable energy saving in application settings of operation system. Set to "NO LIMITS".
+
 ### Step 1: Set Up Secret Mode
 1. Open the app and go to **Settings**.
 2. Tap the **Search** (🔍) icon in the top right.
