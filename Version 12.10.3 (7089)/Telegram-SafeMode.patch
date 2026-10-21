@@ -13,8 +13,8 @@
  }
  
  android {
---- Telegram-Orig/TMessagesProj/build.gradle.txt	1970-01-01 03:00:00.000000000 +0300
-+++ Telegram-SafeMode/TMessagesProj/build.gradle.txt	2026-09-20 19:11:28.733597400 +0300
+--- Telegram-Orig/TMessagesProj/build.gradle	1970-01-01 03:00:00.000000000 +0300
++++ Telegram-SafeMode/TMessagesProj/build.gradle	2026-09-20 19:11:28.733597400 +0300
 @@ -0,0 +1,279 @@
 +import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 +
