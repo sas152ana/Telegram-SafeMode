@@ -50,7 +50,12 @@ This mod introduces three major integrated subsystems:
   * System home screen widgets (Chats, Contacts, and Feed widgets).
   * Android direct share targets and dynamic app shortcuts.
 * **Notification Masking & Suppression:** Push notifications, previews, and vibration/sound from hidden chats are blocked while in safe mode. Unread counters for hidden chats are subtracted from app icon badges.
-* **OS-Level Screen Protection (`FLAG_SECURE`):** Prevents screenshots and masks app preview snapshots in the Android "Recent Apps" switcher while Secret Mode is unlocked.
+* **Cross-Device Encrypted Backup & Sync (`*/export`):** Securely export your entire hidden configuration (chats, folders, feeds, proxy parameters, and timers) into an AES-256-GCM encrypted `.tgsm` file sent directly to Saved Messages. Completely hidden in Safe Mode; tap on the file in Secret Mode to restore or merge settings seamlessly.
+* **Storage & Cache Concealment:** Exact byte-for-byte concealment of hidden media files in "Data and Storage" and "Storage Usage", with instantaneous 0 ms calculation without jumps, lags, or metadata leaks.
+* **Folder Settings Stealth:** Hidden folders are completely hidden from the "Chat Folders" settings list in Safe Mode, with quick toggle controls and secret dot badges in Secret Mode.
+* **OS-Level Screen Protection (`FLAG_SECURE`):** Configurable toggles in Chat Settings to block screenshots/screen recordings and blackout app preview snapshots in the Android task switcher (Recents).
+* **Audio Focus & Background Playback:** Transient audio focus management prevents background players (such as YouTube) from losing volume permanently after listening to voice notes.
+* **Hardware Volume Key Protection:** Disabled unexpected auto-playback of round videos and voice messages triggered by accidental volume button clicks.
 * **Configurable Auto-Lock Timers:** Automatically reverts to safe mode after a configurable background timeout or upon switching accounts.
 
 ---
@@ -62,8 +67,10 @@ This mod introduces three major integrated subsystems:
 * **Composite SQL Pagination:** Uses a composite cursor `(date, uid, mid)` for SQLite queries, preventing missing posts or duplicate items across channels.
 * **Native Forward Headers:** Feed items dynamically render author and channel tags using native Telegram headers (`fwd_from`), eliminating redundant UI elements.
 * **Window-Based Fast Loading:** Opens directly on the oldest unread post across all sources rather than forcing a full download from the latest post.
-* **Bi-directional History & Gap Healing:** Seamlessly scrolls forward and backward through time. Detects and patches message sequence gaps on the fly without network spikes.
+* **Bi-directional History & Gap Healing:** Seamlessly scrolls forward and backward through time without jitter or unexpected scroll jumps upon touch release. Detects and patches message sequence gaps on the fly without network spikes.
 * **Two-Way Read Synchronization:** Scrolling through the feed marks messages as read in the underlying source channels, updating unread counters locally and syncing with the server.
+* **Double-Tap Reactions:** Direct reaction assignment on feed items matching source channel permissions.
+* **Player Aspect Ratio Fix:** Videos playing within feeds and chats preserve their original aspect ratio on wide and folding displays without edge cropping.
 * **Full Feed Profile & Shared Media Aggregation:**
   * **Channels Tab (`TAB_FEED_CHANNELS`):** Manage channel sources with a "Select All" toggle directly from the feed profile.
   * **Posts / Stories Tab (`TAB_FEED_POSTS`):** View aggregated channel stories/posts in a multi-column grid with pinch-to-zoom support.
@@ -146,7 +153,16 @@ This mod introduces three major integrated subsystems:
 
 ---
 
-### Step 6: Lock & Return to Safe Mode
+### Step 6: Export & Sync Across Devices
+1. While in Secret Mode, open **Settings** and tap the **Search (🔍)** icon.
+2. Type `*/export` and press **Enter / Search**.
+3. An encrypted configuration file (`SafeMode_Backup.tgsm`) is created and sent to your **Saved Messages**.
+4. On your second device, enter Secret Mode, open **Saved Messages**, and tap the `.tgsm` file to review and apply or merge your settings.
+*(Note: In Safe Mode, this message is completely invisible in Saved Messages and searches).*
+
+---
+
+### Step 7: Lock & Return to Safe Mode
 To instantly lock the app and hide all protected items:
 * Tap the **Lock** icon in the top action bar of the main chat list.
 * Or enter `*/<your_password>` into the Settings search bar.
@@ -162,6 +178,7 @@ Type these commands directly into the **Settings Search Bar** and press **Enter 
 | :--- | :--- | :--- |
 | `*/<password>` | Initial password setup **OR** unlock/lock toggle | `*/mysecret123` |
 | `*/<old_pass> <new_pass>` | Change existing password | `*/mysecret123 newpass456` |
+| `*/export` | Export encrypted settings backup (`.tgsm`) to Saved Messages | `*/export` |
 | `*/time <minutes>` | Set the background auto-lock timeout | `*/time 1.5` *(90 seconds)* |
 | `*/time 0` | Lock immediately when the app is minimized | `*/time 0` |
 | `*/time 0.25` | Lock after 15 seconds in the background | `*/time 0.25` *(or `*/time 0,25`)* |
