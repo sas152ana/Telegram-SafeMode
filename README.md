@@ -6,10 +6,11 @@
 
 A privacy-focused, anti-censorship, and feature-enhanced modification for the official Telegram Android client.
 
-This mod introduces three major integrated subsystems:
-1. **SafeMode (Stealth Privacy System):** Completely hide selected chats, folders, feeds, proxy settings, contacts, and notifications behind a zero-footprint, search-bar-activated secret mode.
-2. **Feeds in Folders (Aggregated Channel Streams):** Seamlessly aggregate multiple channels into clean, unified, and scrollable chronological news feeds attached directly to your chat folders.
-3. **Built-in Native WS Proxy (Anti-Censorship Engine):** Embedded high-performance WebSocket/MTProto proxy daemon based on [tg-ws-proxy-android](https://github.com/amurcanov/tg-ws-proxy-android) with Cloudflare CDN balancing, connection watchdog, and stealth failover.
+This mod introduces four major integrated subsystems:
+1. **SafeMode (Stealth Privacy System & Centralized Hub):** Completely hide selected chats, folders, feeds, proxy settings, contacts, and notifications behind a zero-footprint, search-bar-activated secret mode, managed via a dedicated, unified settings hub.
+2. **In-App GitHub OTA Updates (Stealth Auto-Updater):** Native update engine synced with GitHub Releases API, featuring complete stealth suppression in Safe Mode and intelligent download caching.
+3. **Feeds in Folders (Aggregated Channel Streams):** Seamlessly aggregate multiple channels into clean, unified, and scrollable chronological news feeds attached directly to your chat folders.
+4. **Built-in Native WS Proxy (Anti-Censorship Engine):** Embedded high-performance WebSocket/MTProto proxy daemon based on [tg-ws-proxy-android](https://github.com/amurcanov/tg-ws-proxy-android) with Cloudflare CDN balancing, connection watchdog, and stealth failover.
 
 <img width="484" height="1010" alt="SafeMode" src="https://github.com/user-attachments/assets/a59d16c7-9359-41da-ba41-1ec05ba780c2" />
 
@@ -19,15 +20,18 @@ This mod introduces three major integrated subsystems:
 
 - [Features](#-features)
   - [1. SafeMode & Stealth Privacy](#1-safemode--stealth-privacy)
-  - [2. Feeds in Folders (Channel Aggregation)](#2-feeds-in-folders-channel-aggregation)
-  - [3. Built-in Native WS Proxy (Anti-Censorship Engine)](#3-built-in-native-ws-proxy-anti-censorship-engine)
+  - [2. In-App GitHub OTA Updates](#2-in-app-github-ota-updates)
+  - [3. Feeds in Folders (Channel Aggregation)](#3-feeds-in-folders-channel-aggregation)
+  - [4. Built-in Native WS Proxy (Anti-Censorship Engine)](#4-built-in-native-ws-proxy-anti-censorship-engine)
 - [Quick Start Guide](#-quick-start-guide)
   - [Step 1: Set Up Secret Mode](#step-1-set-up-secret-mode)
-  - [Step 2: Configure Global Stealth Behavior (Feeds & Proxy)](#step-2-configure-global-stealth-behavior-feeds--proxy)
-  - [Step 3: Create and Manage Feeds](#step-3-create-and-manage-feeds)
-  - [Step 4: Configure Built-in Proxy](#step-4-configure-built-in-proxy)
-  - [Step 5: Hide / Reveal Content](#step-5-hide--reveal-content)
-  - [Step 6: Lock & Return to Safe Mode](#step-6-lock--return-to-safe-mode)
+  - [Step 2: Configure Centralized SafeMode Hub & Stealth Rules](#step-2-configure-centralized-safemode-hub--stealth-rules)
+  - [Step 3: Check and Install OTA Updates](#step-3-check-and-install-ota-updates)
+  - [Step 4: Create and Manage Feeds](#step-4-create-and-manage-feeds)
+  - [Step 5: Configure Built-in Proxy](#step-5-configure-built-in-proxy)
+  - [Step 6: Hide / Reveal Content](#step-6-hide--reveal-content)
+  - [Step 7: Export & Sync Across Devices](#step-7-export--sync-across-devices)
+  - [Step 8: Lock & Return to Safe Mode](#step-8-lock--return-to-safe-mode)
 - [Commands Reference](#-commands-reference)
 - [How to Build from Source](#-how-to-build-from-source)
 - [Technical Architecture](#-technical-architecture)
@@ -40,7 +44,8 @@ This mod introduces three major integrated subsystems:
 
 ### 1. SafeMode & Stealth Privacy
 
-* **Zero-Footprint Activation:** No lock icons, PIN prompts, or suspicious UI artifacts in SafeMode. Activation and unlocking are triggered exclusively via hidden commands entered into the Settings search bar.
+* **Centralized SafeMode Settings Hub:** A dedicated settings activity (`SafeModeSettingsActivity`) consolidated directly into main Telegram Settings. Houses mode status, password management, auto-lock timers, security toggles, proxy settings, and updater controls with theme-adaptive, underlined input fields.
+* **Zero-Footprint Activation:** No lock icons, PIN prompts, or suspicious UI artifacts in SafeMode. Activation and unlocking can be triggered via the Settings search bar (`*/<password>`) or directly from the SafeMode settings screen.
 * **Cryptographic Security:** Passwords are hashed using salted `PBKDF2-HMAC-SHA1` (65,536 iterations, computed asynchronously) with timing-attack mitigations (`MessageDigest.isEqual`) and an automatic lockout cooldown after 5 failed attempts.
 * **Deep System-Wide Sanitization:** When SafeMode is active (locked), all hidden items are completely filtered out from:
   * Chat lists, folder tabs, and search suggestions.
@@ -52,15 +57,27 @@ This mod introduces three major integrated subsystems:
 * **Notification Masking & Suppression:** Push notifications, previews, and vibration/sound from hidden chats are blocked while in safe mode. Unread counters for hidden chats are subtracted from app icon badges.
 * **Cross-Device Encrypted Backup & Sync (`*/export`):** Securely export your entire hidden configuration (chats, folders, feeds, proxy parameters, and timers) into an AES-256-GCM encrypted `.tgsm` file sent directly to Saved Messages. Completely hidden in Safe Mode; tap on the file in Secret Mode to restore or merge settings seamlessly.
 * **Storage & Cache Concealment:** Exact byte-for-byte concealment of hidden media files in "Data and Storage" and "Storage Usage", with instantaneous 0 ms calculation without jumps, lags, or metadata leaks.
+* **Independent Stealth Visibility Rules:** Granular, separate toggles to hide the SafeMode Settings hub, News Feeds, and Proxy controls in Safe Mode independently.
 * **Folder Settings Stealth:** Hidden folders are completely hidden from the "Chat Folders" settings list in Safe Mode, with quick toggle controls and secret dot badges in Secret Mode.
-* **OS-Level Screen Protection (`FLAG_SECURE`):** Configurable toggles in Chat Settings to block screenshots/screen recordings and blackout app preview snapshots in the Android task switcher (Recents).
+* **OS-Level Screen Protection (`FLAG_SECURE`):** Configurable toggles in SafeMode Settings to block screenshots/screen recordings and blackout app preview snapshots in the Android task switcher (Recents).
 * **Audio Focus & Background Playback:** Transient audio focus management prevents background players (such as YouTube) from losing volume permanently after listening to voice notes.
 * **Hardware Volume Key Protection:** Disabled unexpected auto-playback of round videos and voice messages triggered by accidental volume button clicks.
 * **Configurable Auto-Lock Timers:** Automatically reverts to safe mode after a configurable background timeout or upon switching accounts.
+* **Full Multi-Language Localization:** 100% native translations for all SafeMode menus and updater dialogs across 10 languages (EN, RU, UK, DE, ES, IT, PT-BR, NL, AR, KO).
 
 ---
 
-### 2. Feeds in Folders (Channel Aggregation)
+### 2. In-App GitHub OTA Updates
+
+* **Direct GitHub Releases Sync:** Automated and manual release checker connected directly to the official GitHub repository releases API (`GitHubUpdateController`).
+* **Stealth Guard Protection:** Update notifications and release popups are completely silenced in Safe Mode by default, preventing unexpected dialogs from revealing that a modified client is installed. An optional toggle allows notifications in Safe Mode if desired.
+* **Smart Download Cache:** If the update APK has already been downloaded and verified via package archive inspection, the updater skips re-downloading and immediately prompts to "Install".
+* **Automatic Storage Cleanup:** Deletes older downloaded update APKs upon fetching a new release, ensuring installation packages do not accumulate on device storage.
+* **Permission Guard Recovery:** Seamlessly handles Android 8.0+ `REQUEST_INSTALL_PACKAGES` permissions, guiding the user to system settings and automatically launching the package installer upon returning to the app without requiring repeated clicks.
+
+---
+
+### 3. Feeds in Folders (Channel Aggregation)
 
 * **One Feed per Folder:** Pin a dedicated, virtual news feed at the top of any folder (or the main "All Chats" list).
 * **Multi-Channel Chronological Stream:** Merges posts from all chosen channels in real time with exact time-based sorting.
@@ -79,7 +96,7 @@ This mod introduces three major integrated subsystems:
 
 ---
 
-### 3. Built-in Native WS Proxy (Anti-Censorship Engine)
+### 4. Built-in Native WS Proxy (Anti-Censorship Engine)
 
 * **Embedded Native Core:** Integrated Rust-based proxy daemon (`libtgwsproxy.so`) connected via JNA, based on [tg-ws-proxy-android](https://github.com/amurcanov/tg-ws-proxy-android). Runs entirely locally on `127.0.0.1`.
 * **Zero External Dependencies:** No third-party VPN apps or external proxy clients required; works out of the box on `arm64-v8a`, `armeabi-v7a`, and `x86_64` architectures.
@@ -115,15 +132,32 @@ This mod introduces three major integrated subsystems:
 
 ---
 
-### Step 2: Configure Global Stealth Behavior (Feeds & Proxy)
-1. While in Secret Mode, go to **Settings** $\rightarrow$ **Chat Settings**.
-2. Scroll down to find the stealth switches:
-   * **Hide feeds in safe mode:** News feeds will be completely hidden from folders when leaving Secret Mode.
-   * **Hide proxy in safe mode:** Proxy settings, status icons, and menus will be hidden when leaving Secret Mode (while maintaining background connectivity in Ghost Mode).
+### Step 2: Configure Centralized SafeMode Hub & Stealth Rules
+1. Open **Settings** and tap the new **SafeMode Settings** section (or unlock it via the search bar).
+2. Here you can configure all mod parameters in one place:
+   * **Status & Access:** View active mode, enter secret mode, change password with clean underlined fields, and set the auto-lock timer.
+   * **Visibility & Stealth:** Set independent visibility toggles:
+     * *Hide settings in safe mode:* Hides the entire SafeMode settings row when locked.
+     * *Hide feeds in safe mode:* Hides news feeds from chat folders when locked.
+     * *Hide proxy in safe mode:* Hides proxy configuration and status icons when locked (maintains background connectivity in Ghost Mode).
+   * **Security:** Enable/disable screenshot restrictions and recents window blackouts.
 
 ---
 
-### Step 3: Create and Manage Feeds
+### Step 3: Check and Install OTA Updates
+1. Go to **Settings** $\rightarrow$ **SafeMode Settings**.
+2. Under **App Updates**, tap **Check for updates** to fetch the latest release from GitHub.
+3. If an update is available:
+   * Tap **Update** to download the APK with a live MB/percentage progress indicator.
+   * If already downloaded, the button automatically displays **Install**.
+   * If installation permission is required, tap **Settings**, enable *Allow from this source*, and return — installation will launch automatically.
+4. Customize update behavior:
+   * **Auto-check updates:** Toggle automatic periodic checks in the background.
+   * **Alerts in safe mode:** Keep disabled to ensure update popups never appear while in Safe Mode (Stealth Guard).
+
+---
+
+### Step 4: Create and Manage Feeds
 1. Long-press on any **Folder Tab** (or the **All Chats** tab).
 2. In the popup menu, select **Show news feed**.
 3. A pinned **Feed** item will appear at the top of that folder list.
@@ -251,14 +285,14 @@ public static String APP_HASH = "0123456789abcdef0123456789abcdef"; // Replace w
                                 │  SecretModeController  │
                                 └───────────┬────────────┘
                                             │
-         ┌─────────────────────────┬────────┴────────────────┬─────────────────────────┐
-         ▼                         ▼                         ▼                         ▼
-┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐      ┌──────────────────┐
-│   Stealth Mode   │      │  Virtual Feeds   │      │   Media Engine   │      │ Native WS Proxy  │
-│  - Hiding Engine │      │  - Virtual Peers │      │  - Rate Limiter  │      │  - WsProxyCtrl   │
-│  - Push Firewall │      │  - SQL Composite │      │  - Tail Buffers  │      │  - JNA Bridge    │
-│  - FLAG_SECURE   │      │  - Read Tracker  │      │  - Feed Playlist │      │  - Watchdog/CDN  │
-└──────────────────┘      └──────────────────┘      └──────────────────┘      └──────────────────┘
+         ┌───────────────────┬──────────────┴──────┬───────────────────┬───────────────────┐
+         ▼                   ▼                     ▼                   ▼                   ▼
+┌──────────────────┐┌──────────────────┐┌──────────────────┐┌──────────────────┐┌──────────────────┐
+│   Stealth Mode   ││  SafeMode Hub &  ││  Virtual Feeds   ││ Native WS Proxy  ││   OTA Updates    │
+│  - Hiding Engine ││   Settings UI    ││  - Virtual Peers ││  - WsProxyCtrl   ││  - GitHub API    │
+│  - Push Firewall ││  - Password/Lock ││  - SQL Composite ││  - JNA Bridge    ││  - Stealth Guard │
+│  - FLAG_SECURE   ││  - Visibility    ││  - Read Tracker  ││  - Watchdog/CDN  ││  - Auto-Installer│
+└──────────────────┘└──────────────────┘└──────────────────┘└──────────────────┘└──────────────────┘
 ```
 
 * **Virtual Peer Isolation:** Feeds use virtual IDs calculated as `VIRTUAL_FEED_ALL_ID - folderId` (`-99990000000000L`). All network calls directed at these virtual IDs are intercepted and blocked at the controller layer, preventing invalid MTProto requests (`400 CHANNEL_INVALID`).
